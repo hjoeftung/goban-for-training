@@ -16,9 +16,10 @@ Including another URLconf
 from importlib import import_module
 from django.contrib import admin
 from django.urls import path
-from project_goban.views import MainView
+from goban.views import MainView
 
 
 urlpatterns = [
-    path('', MainView.as_view()),
+    path("", MainView.as_view(), name="app"),
+    path("game/<str:game_id>/", MainView.as_view(), name="app"),
 ]
