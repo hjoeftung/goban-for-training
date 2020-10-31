@@ -71,14 +71,6 @@ TEMPLATES = [
     },
 ]
 
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE': DEBUG,
-        'BUNDLE_DIR_NAME': '/bundles/',  # must end with slash
-        'STATS_FILE': os.path.join(FRONTEND_DIR, 'webpack-stats.json'),
-    }
-}
-
 WSGI_APPLICATION = 'trainingRoom.wsgi.application'
 
 ASGI_APPLICATION = 'trainingRoom.asgi.application'
