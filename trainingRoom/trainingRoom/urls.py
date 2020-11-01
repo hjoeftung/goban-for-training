@@ -21,6 +21,7 @@ from goban.views import MainView
 
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path("", MainView.as_view(), name="starting_page"),
     path("game/<str:game_id>/",
          TemplateView.as_view(template_name="goban/index.html"),

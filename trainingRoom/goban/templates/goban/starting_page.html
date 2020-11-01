@@ -47,7 +47,7 @@
           <label for="preset">
             Выбрать пресет
             <select name="preset" id="preset">
-              <option value="">Обычная игра</option>
+              <option value="standard">Обычная игра</option>
               <option value="atari">Атари-го</option>
               <option value="center">Выживание в центре</option>
               <option value="corner">Выживание в углу</option>
@@ -82,7 +82,7 @@
       handicap: form.querySelector('#handicap').value,
       preset: form.querySelector('#preset').value
     };
-    generate(formData);
+    fetchGame(formData);
   });
 
   function getCookie(name) {
@@ -114,14 +114,20 @@ const fetchGame = config => {
   })
   .then(response => {
     if (response.ok) {
-      console.log(response);
-      response.text();
+      return response.text().then(text => {
+        const link = `${window.location.href}game/${text}`;
+        form.style.display = 'none';
+        document.querySelector('.game-info').style.display = 'block';
+        document.getElementById('game-id').value = link;
+        document.getElementById('game-link').href = link;
+        document.getElementById('copy-id').addEventListener('click', () => {
+          document.getElementById('game-id').select();
+        document.execCommand('copy');
+        });
+      });
     } else {
       throw new Error(`Что-то пошло не так! Код ошибки ${response.status}`);
     }
-  })
-  .then(gameId => {
-    return gameId;
   })
   .catch(error => {
     const section = document.querySelector('section');
@@ -130,22 +136,6 @@ const fetchGame = config => {
     section.appendChild(alert);
   });
 };
-
-async function generate(params) {
-  const gameId = await fetchGame(params);
-  console.log(gameId);
-  if (gameId) {
-    const link = `${window.location.href}/${gameId}`;
-    form.style.display = 'none';
-    document.querySelector('.game-info').style.display = 'block';
-    document.getElementById('game-id').value = link;
-    document.getElementById('game-link').href = link;
-    document.getElementById('copy-id').addEventListener('click', () => {
-      document.getElementById('game-id').select();
-      document.execCommand('copy');
-    });
-  }
-}
 
 </script>
 </html>
