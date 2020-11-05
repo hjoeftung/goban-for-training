@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView
 
 
 class MainView(View):
+
     def get(self, request, *args, **kwargs):
         return render(request, 'goban/starting_page.html')
 
@@ -21,7 +22,9 @@ class MainView(View):
         preset = request_dict["preset"]
 
         Game.objects.create(game_id=game_id, board_size=board_size,
-                            preset=preset, handicap=handicap)
+                            preset=preset, handicap=handicap,
+                            room_visitors=["sai", "sai"],
+                            player_black="sai", player_white="sai")
         return HttpResponse(game_id)
 
     def generate_id(self) -> str:
@@ -31,5 +34,8 @@ class MainView(View):
         return md5.hexdigest()[:12]
 
 
-class GameView(TemplateView):
-    template_name = "goban/index.html"
+class GameView(View):
+    def get(self, request, *args, **kwargs):
+        print(request.META["PATH_INFO"][6:-1])
+        return render(request, "goban/index.html",
+                      {"game_id": request.META["PATH_INFO"][6:-1]})

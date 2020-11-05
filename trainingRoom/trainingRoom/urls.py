@@ -16,14 +16,11 @@ Including another URLconf
 from importlib import import_module
 from django.contrib import admin
 from django.urls import path
-from django.views.generic import TemplateView
-from goban.views import MainView
+from goban.views import MainView, GameView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", MainView.as_view(), name="starting_page"),
-    path("game/<str:game_id>/",
-         TemplateView.as_view(template_name="goban/index.html"),
-         name="app"),
+    path("game/<str:game_id>/", GameView.as_view(), name="app"),
 ]
