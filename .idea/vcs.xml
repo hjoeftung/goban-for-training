@@ -2,8 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/trainingRoom/django-vue-cli-webpack-demo" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/trainingRoom/goban/templates/goban/project-goban" vcs="" />
     <mapping directory="$PROJECT_DIR$/trainingRoom/project-goban" vcs="Git" />
   </component>
 </project>

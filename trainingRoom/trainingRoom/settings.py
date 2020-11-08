@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'goban',
-    'webpack_loader',
     'channels',
 ]
 
