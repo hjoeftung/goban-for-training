@@ -95,7 +95,7 @@ class GameConsumer(WebsocketConsumer):
         if self.game.kifu:
             self.game.kifu += f", {self.convert_move(move)}"
         else:
-            self.game.kifu += self.convert_move(move)
+            self.game.kifu = self.convert_move(move)
         print(self.game.kifu)
 
     def revert(self, event):
