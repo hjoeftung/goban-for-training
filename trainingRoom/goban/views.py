@@ -23,8 +23,8 @@ class MainView(View):
 
         Game.objects.create(game_id=game_id, board_size=board_size,
                             preset=preset, handicap=handicap,
-                            room_visitors=["sai", "sai"],
-                            player_black="sai", player_white="sai")
+                            room_visitors=["", ""],
+                            player_black="", player_white="")
         return HttpResponse(game_id)
 
     def generate_id(self) -> str:

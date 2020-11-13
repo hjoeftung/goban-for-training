@@ -82,8 +82,7 @@ class GameConsumer(WebsocketConsumer):
         else:
             self.game.player_white = payload["name"]
 
-        print(f"black: {self.game.player_black}",
-              f"white: {self.game.player_white}")
+        self.save_changes()
 
     def move(self, event):
         move = event["payload"]
@@ -92,23 +91,14 @@ class GameConsumer(WebsocketConsumer):
             "action": "move",
             "payload": move
         }))
-        if self.game.kifu:
-            self.game.kifu += f", {self.convert_move(move)}"
-        else:
-            self.game.kifu = self.convert_move(move)
-        print(self.game.kifu)
+
+        self.game.kifu.append(str(move))
 
     def revert(self, event):
         self.send(text_data=json.dumps({"action": "revert"}))
 
     def confirm(self, event):
         self.send(text_data=json.dumps({"action": "confirm"}))
-        self.game.kifu = self.game.kifu[:self.game.kifu.rindex(",")]
-
-    def convert_move(self, move):
-        color = "B" if move["color"] == "black" else "W"
-        coords = ";".join(map(str, move["coords"].values()))
-        return color + coords
 
     def save_changes(self):
         self.game.save()
