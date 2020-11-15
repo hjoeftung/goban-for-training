@@ -1,0 +1,141 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'starting_page/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'starting_page/style.css' %}">
+  <title>Виртуальный гобан</title>
+</head>
+<body>
+  <header>
+    <h1>Добро пожаловать!</h1>
+  </header>
+  <main>
+    <section>
+      <form action="#" id="generate-form">
+        <div class="form-group">
+          <label for="size">
+            Выберите размер доски
+            <select name="size" id="size">
+              <option value="19">19<sup>*</sup>19</option>
+              <option value="13">13<sup>*</sup>13</option>
+              <option value="9">9<sup>*</sup>9</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="color">
+            Ваш цвет
+            <select name="color" id="color">
+              <option value="nigiri">Случайный (нигири)</option>
+              <option value="black">Черный</option>
+              <option value="white">Белый</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="handicap">Фора</label>
+          <input type="number" id="handicap" value="0">
+        </div>
+        <div class="form-group">
+          <label for="preset">
+            Выбрать пресет
+            <select name="preset" id="preset">
+              <option value="standard">Обычная игра</option>
+              <option value="atari">Атари-го</option>
+              <option value="center">Выживание в центре</option>
+              <option value="corner">Выживание в углу</option>
+              <option value="full">Выживание по всей доске</option>
+              <option value="colorless">Одноцветное го</option>
+            </select>
+          </label>
+        </div>
+        <input id="generate" type="submit" value="Сгенерировать игру">
+      </form>
+      <div class="game-info">
+        <label for="game-id">Ссылка-приглашение</label>
+        <div class="input-group">
+          <input type="text" id="game-id">
+          <button id="copy-id">Скопировать</button>
+        </div>
+        <div>
+          <button><a id="game-link" href="">Перейти к игре</a></button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+<script>
+  const form = document.getElementById('generate-form');
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const formData = {
+      size: form.querySelector('#size').value,
+      color: form.querySelector('#color').value,
+      handicap: form.querySelector('#handicap').value,
+      preset: form.querySelector('#preset').value
+    };
+    fetchGame(formData);
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+const fetchGame = config => {
+  const csrftoken = getCookie('csrftoken');
+
+  const request = new Request(
+    window.location.href,
+    { headers: { 'X-CSRFToken': csrftoken } }
+  );
+  fetch(request, {
+    method: 'POST',
+    body: JSON.stringify(config)
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.text().then(text => {
+        const link = `${window.location.href}game/${text}`;
+        form.style.display = 'none';
+        document.querySelector('.game-info').style.display = 'block';
+        document.getElementById('game-id').value = link;
+        document.getElementById('game-link').href = link;
+        document.getElementById('copy-id').addEventListener('click', () => {
+          document.getElementById('game-id').select();
+        document.execCommand('copy');
+        });
+      });
+    } else {
+      throw new Error(`Что-то пошло не так! Код ошибки ${response.status}`);
+    }
+  })
+  .catch(error => {
+    const section = document.querySelector('section');
+    const alert = document.createElement('div');
+    alert.innerText = error.message;
+    section.appendChild(alert);
+  });
+};
+
+</script>
+</html>
