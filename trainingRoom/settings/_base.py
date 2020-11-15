@@ -11,6 +11,21 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import json
+
+from django.core.exceptions import ImproperlyConfigured
+
+with open(os.path.join(os.path.dirname(__file__), 'secrets.json'), 'r') as f:
+    secrets = json.loads(f.read())
+
+
+def get_secret(setting):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = f'Set the {setting} environment variable'
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +36,7 @@ FRONTEND_DIR = os.path.join(BASE_DIR, 'project-goban')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&c%e3v@ljr^@5szx+63#-k&z*z66w7$k1zv&8f_o57v0_xge7%'
+SECRET_KEY = get_secret('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,9 +104,9 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'goban',
-        'USER': 'go_master',
-        'PASSWORD': 'goisolive',
+        'NAME': get_secret('DATABASE_NAME'),
+        'USER': get_secret('DATABASE_USER'),
+        'PASSWORD': get_secret('DATABASE_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

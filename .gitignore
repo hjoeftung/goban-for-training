@@ -130,4 +130,4 @@ dmypy.json
 
 
 .idea
-trainingRoom/trainingRoom/settings.py
+trainingRoom/settings/secrets.json
