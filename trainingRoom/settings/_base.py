@@ -15,6 +15,7 @@ import json
 
 from django.core.exceptions import ImproperlyConfigured
 
+
 with open(os.path.join(os.path.dirname(__file__), 'secrets.json'), 'r') as f:
     secrets = json.loads(f.read())
 
@@ -42,7 +43,6 @@ SECRET_KEY = get_secret('DJANGO_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
 
 # Application definition
 
