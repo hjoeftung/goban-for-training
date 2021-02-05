@@ -99,6 +99,12 @@ class GameConsumer(WebsocketConsumer):
     def seat(self, event):
         payload = event["payload"]
 
+        if self.channel_name != event["channel_name"]:
+            self.send(text_data=json.dumps({
+                "action": "seat",
+                "payload": payload
+            }))
+
         if payload["color"] == "black":
             self.game.player_black = payload["name"]
         else:
@@ -106,19 +112,8 @@ class GameConsumer(WebsocketConsumer):
 
         self.save_changes()
 
-        if self.channel_name != event["channel_name"]:
-            self.send(text_data=json.dumps({
-                "action": "seat",
-                "payload": payload
-            }))
-
     def leave(self, event):
         payload = event["payload"]
-
-        if payload["color"] == "black":
-            self.game.player_black = ""
-        else:
-            self.game.player_white = ""
 
         if self.channel_name != event["channel_name"]:
             self.send(text_data=json.dumps({
@@ -126,13 +121,19 @@ class GameConsumer(WebsocketConsumer):
                 "payload": payload
             }))
 
+        if payload["color"] == "black":
+            self.game.player_black = ""
+        else:
+            self.game.player_white = ""
+
     def move(self, event):
         move = event["payload"]
 
-        self.send(text_data=json.dumps({
-            "action": "move",
-            "payload": move
-        }))
+        if self.channel_name != event["channel_name"]:
+            self.send(text_data=json.dumps({
+                "action": "move",
+                "payload": move
+            }))
 
         if self.game.kifu:
             self.game.kifu += f", {self.encode_move(move)}"
@@ -142,7 +143,8 @@ class GameConsumer(WebsocketConsumer):
         self.save_changes()
 
     def revert(self, event):
-        self.send(text_data=json.dumps({"action": "revert"}))
+        if self.channel_name != event["channel_name"]:
+            self.send(text_data=json.dumps({"action": "revert"}))
 
     def confirm(self, event):
         self.send(text_data=json.dumps({"action": "confirm"}))
