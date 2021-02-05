@@ -4,4 +4,5 @@
 /project-goban
 /trainingRoom/settings/secrets.json
 /goban/migrations/__pycache__
-
+/goban/__pycache__
+/trainingRoom/settings/__pycache__
