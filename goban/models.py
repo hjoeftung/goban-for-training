@@ -11,4 +11,4 @@ class Game(models.Model):
     board_size = models.IntegerField(default=0)
     handicap = models.IntegerField(default=0)
     preset = models.CharField(max_length=30)
-    kifu = ArrayField(models.CharField(max_length=50), default=list, null=True)
+    kifu = models.TextField(default="")
